@@ -10,6 +10,12 @@ class KVueRouter {
     window.addEventListener('hashchange', this.onHashChange.bind(this))
 
     window.addEventListener('load', this.onHashChange.bind(this))
+
+    // 创建一个路由映射表
+    this.routeMap = {}
+    options.routes.forEach(route => {
+      this.routeMap[route.path] = route
+    })
   }
 
   onHashChange () {
@@ -48,13 +54,8 @@ KVueRouter.install = _Vue => {
   Vue.component('router-view', {
     render (h) {
       // 获取path对应的component
-      let component = null
-      this.$router.$options.routes.forEach(route => {
-        console.log(route, this.$router.current)
-        if (route.path === this.$router.current) {
-          component = route.component
-        }
-      })
+      const { routeMap, current } = this.$router
+      const component = routeMap[current].component || null
       return h(component)
     }
   })
